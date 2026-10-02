@@ -5,7 +5,17 @@ let currentUser=null,currentProfile=null,pendingAccessCount=0,pendingReviewCount
 
 function go(page){window.scrollTo(0,0);if(page==='home')return home();if(page==='student')return studentDashboard();if(page==='teacher')return teacherDashboard()}
 function setLogout(show){document.querySelector('.ghost').hidden=!show;document.getElementById('mainNav').hidden=!show;if(show)renderNav()}
-function renderNav(){const nav=document.getElementById('mainNav');if(!nav||!currentProfile)return;const teacher=currentProfile.role==='teacher'||currentProfile.role==='admin';const total=pendingAccessCount+pendingReviewCount;const badges=(pendingAccessCount?\`<span class="nav-badge nav-badge-access" title="Toegangsaanvragen">\${pendingAccessCount>99?'99+':pendingAccessCount}</span>\`:'')+(pendingReviewCount?\`<span class="nav-badge nav-badge-review" title="Te beoordelen werk">\${pendingReviewCount>99?'99+':pendingReviewCount}</span>\`:'');nav.innerHTML=teacher?\`<button onclick="teacherDashboard()">Dashboard</button><button class="\${total?'has-alert':''}" onclick="teacherPage()">Docent\${badges}</button><button onclick="profilePage()">Profiel</button>\`:\`<button onclick="studentDashboard()">Dashboard</button><button onclick="profilePage()">Profiel</button>\`}
+function renderNav(){
+  const nav=document.getElementById('mainNav');
+  if(!nav||!currentProfile)return;
+  const teacher=currentProfile.role==='teacher'||currentProfile.role==='admin';
+  const total=pendingAccessCount+pendingReviewCount;
+  const accessBadge=pendingAccessCount?'<span class="nav-badge nav-badge-access" title="Toegangsaanvragen">'+(pendingAccessCount>99?'99+':pendingAccessCount)+'</span>':'';
+  const reviewBadge=pendingReviewCount?'<span class="nav-badge nav-badge-review" title="Te beoordelen werk">'+(pendingReviewCount>99?'99+':pendingReviewCount)+'</span>':'';
+  nav.innerHTML=teacher
+    ? '<button onclick="teacherDashboard()">Dashboard</button><button class="'+(total?'has-alert':'')+'" onclick="teacherPage()">Docent'+accessBadge+reviewBadge+'</button><button onclick="profilePage()">Profiel</button>'
+    : '<button onclick="studentDashboard()">Dashboard</button><button onclick="profilePage()">Profiel</button>';
+}
 function statusClass(s){return 'status-'+String(s||'new').replace(/_/g,'-')}
 function tagHtml(s){return `<span class="tag ${statusClass(s)}">${esc(label(s))}</span>`}
 function closeModal(){document.getElementById('modalRoot').innerHTML=''}
