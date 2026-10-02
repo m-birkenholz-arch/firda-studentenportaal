@@ -1,6 +1,6 @@
 {
   "name": "Firda Studentenportaal",
-  "short_name": "Studentenportaal",
+  "short_name": "Portaal",
   "description": "Opdrachten inleveren, beoordelen en feedback ontvangen.",
   "start_url": "/",
   "scope": "/",
