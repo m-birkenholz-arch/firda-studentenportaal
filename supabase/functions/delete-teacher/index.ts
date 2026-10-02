@@ -13,14 +13,16 @@ Deno.serve(async(req)=>{
     if(userError||!userData.user)return json({error:'Niet ingelogd.'},401)
     const caller=userData.user
     const {data:me}=await admin.from('profiles').select('role').eq('id',caller.id).single()
-    if(me?.role!=='admin')return json({error:'Alleen een beheerder kan docenten verwijderen.'},403)
+    if(me?.role!=='admin')return json({error:'Alleen een beheerder kan accounts verwijderen.'},403)
 
-    const {teacherId}=await req.json()
-    if(!teacherId||teacherId===caller.id)return json({error:'Dit account kan niet worden verwijderd.'},400)
-    const {data:target}=await admin.from('profiles').select('role').eq('id',teacherId).single()
-    if(target?.role!=='teacher')return json({error:'Docent niet gevonden.'},404)
+    const {teacherId,studentId}=await req.json()
+    const targetId=teacherId||studentId
+    const expectedRole=studentId?'student':'teacher'
+    if(!targetId||targetId===caller.id)return json({error:'Dit account kan niet worden verwijderd.'},400)
+    const {data:target}=await admin.from('profiles').select('role').eq('id',targetId).single()
+    if(target?.role!==expectedRole)return json({error:expectedRole==='student'?'Student niet gevonden.':'Docent niet gevonden.'},404)
 
-    const {data:subs}=await admin.from('submissions').select('id').eq('student_id',teacherId)
+    const {data:subs}=await admin.from('submissions').select('id').eq('student_id',targetId)
     const subIds=(subs||[]).map((x:any)=>x.id)
     if(subIds.length){
       const {data:versions}=await admin.from('submission_versions').select('storage_path').in('submission_id',subIds)
@@ -28,9 +30,8 @@ Deno.serve(async(req)=>{
       if(paths.length){const {error:e}=await admin.storage.from('submissions').remove(paths);if(e)throw e}
     }
 
-    // Deleting the Auth user removes rows that reference it through ON DELETE CASCADE.
-    // If a database relation intentionally blocks deletion, abort instead of leaving partial account data.
-    const {error:deleteError}=await admin.auth.admin.deleteUser(teacherId)
+    // Auth deletion also removes related database rows through configured ON DELETE CASCADE relations.
+    const {error:deleteError}=await admin.auth.admin.deleteUser(targetId)
     if(deleteError)throw deleteError
     return json({ok:true})
   }catch(e){console.error(e);return json({error:String((e as Error)?.message||e)},500)}
