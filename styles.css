@@ -48,3 +48,8 @@
 /* Verwijder defect vlak van eerdere embleem-masker */
 .marine-wordmark .marine-crest{display:none!important}
 .marine-wordmark{gap:0}
+
+/* Wit embleem naast Korps Mariniers woordmerk */
+.marine-wordmark{gap:7px}
+.marine-emblem{display:block;width:43px;height:52px;object-fit:contain;filter:brightness(0) invert(1);flex:0 0 auto}
+@media(max-width:650px){.marine-wordmark{gap:5px}.marine-emblem{width:35px;height:43px}}
