@@ -428,3 +428,7 @@
 .header-right .marine-logo-image{background:transparent!important;padding:0!important;border-radius:0!important;min-height:0}
 .header-right .marine-logo-image img{display:block;width:220px!important;height:auto!important;max-width:220px!important;max-height:48px!important;object-fit:contain}
 @media(max-width:650px){.header-right .marine-logo-image img{width:145px!important;max-width:145px!important;max-height:38px!important}}
+
+/* Klikbare headerlogo's */
+.brand-logo,.marine-link{text-decoration:none}
+.marine-link{cursor:pointer}
