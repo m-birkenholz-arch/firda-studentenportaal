@@ -107,3 +107,28 @@
   .class-heading .muted{font-size:11px;line-height:1.25;margin:4px 0}
   .new-class-btn{flex:0 0 auto;width:auto!important;padding:8px 10px;font-size:11px;border-radius:9px;margin-left:auto}
 }
+
+/* Student opdracht: compacte mobiele weergave */
+@media(max-width:650px){
+  .student-assignment{padding:12px 12px 82px}
+  .student-assignment>.back{margin:0 0 8px;font-size:12px}
+  .student-assignment>.split{gap:10px}
+  .student-assignment .panel{padding:14px;border-radius:14px}
+  .student-assignment .assignment-main>h1{font-size:25px;line-height:1.05;letter-spacing:-.7px;margin:7px 0 8px}
+  .student-assignment .assignment-main>p{font-size:13px;line-height:1.3;margin:6px 0 10px}
+  .student-assignment .tag{padding:5px 8px;font-size:10px}
+  .student-assignment .notice{padding:11px 12px;margin:10px 0;border-radius:10px}
+  .student-assignment .notice b{font-size:14px}
+  .student-assignment .notice p{font-size:12px;line-height:1.3;margin:5px 0 0}
+  .student-assignment h2{font-size:18px;margin:4px 0 8px}
+  .student-assignment h3{font-size:17px;margin:12px 0 7px}
+  .student-assignment .drop{padding:12px;margin:8px 0 10px;border-radius:12px}
+  .student-assignment .drop input{font-size:12px;max-width:100%}
+  .student-assignment .drop p{font-size:11px;line-height:1.3;margin:7px 0 0}
+  .student-assignment .field{margin:9px 0;gap:5px}
+  .student-assignment .field label{font-size:12px}
+  .student-assignment .field textarea{min-height:58px;padding:9px;font-size:12px}
+  .student-assignment .btn{padding:9px 12px;font-size:12px}
+  .student-assignment .member{padding:8px 0;font-size:12px}
+  .student-assignment .member small{font-size:10px}
+}
