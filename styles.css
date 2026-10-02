@@ -36,3 +36,11 @@
 .marine-logo+.demo{margin-left:0}
 .marine-logo-transparent{background:#fff;-webkit-mask:url("https://3.bp.blogspot.com/-ANNzKpKsQBY/VnEKZxJ7uGI/AAAAAAAADnQ/to2r_g_OqAo/s1600/Lambang%2BKorps%2BMariniers.jpg") center/contain no-repeat;mask:url("https://3.bp.blogspot.com/-ANNzKpKsQBY/VnEKZxJ7uGI/AAAAAAAADnQ/to2r_g_OqAo/s1600/Lambang%2BKorps%2BMariniers.jpg") center/contain no-repeat}
 @media(max-width:650px){.marine-logo{height:54px;width:47px;margin-left:auto}.main-nav:not([hidden])+.marine-logo{margin-left:0}}
+
+/* Transparant Korps Mariniers woordmerk */
+.marine-wordmark{height:62px;display:flex;align-items:center;gap:8px;margin-left:auto;flex:0 0 auto;color:#fff}
+.main-nav:not([hidden])+.marine-wordmark{margin-left:0}
+.marine-crest{width:49px;height:58px;display:block;background:#fff;-webkit-mask:url("https://3.bp.blogspot.com/-ANNzKpKsQBY/VnEKZxJ7uGI/AAAAAAAADnQ/to2r_g_OqAo/s1600/Lambang%2BKorps%2BMariniers.jpg") center/contain no-repeat;mask:url("https://3.bp.blogspot.com/-ANNzKpKsQBY/VnEKZxJ7uGI/AAAAAAAADnQ/to2r_g_OqAo/s1600/Lambang%2BKorps%2BMariniers.jpg") center/contain no-repeat}
+.marine-type{display:flex;flex-direction:column;line-height:.82;letter-spacing:.04em}.marine-type small{font-size:11px;letter-spacing:.18em;font-weight:500}.marine-type strong{font-size:22px;font-weight:900;letter-spacing:.02em}
+.marine-wordmark+.demo{margin-left:0}
+@media(max-width:650px){.marine-wordmark{height:52px;gap:5px}.marine-crest{width:39px;height:47px}.marine-type small{font-size:8px}.marine-type strong{font-size:15px}.marine-logo{display:none}}
