@@ -248,3 +248,11 @@
   body:has(.auth-card) .auth-pane .btn{padding:10px 12px;font-size:12px}
   body:has(.auth-card) .auth-pane .textbtn{font-size:11px;margin:8px 0 0 auto;text-align:right}
 }
+
+
+/* Bevestiging toegangsaanvraag */
+.request-success{text-align:center;padding:12px 4px 4px}
+.request-success-icon{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;margin:0 auto 14px;background:var(--green,#244d3c);color:#fff;font-size:26px;font-weight:800}
+.request-success h2{margin-bottom:8px}
+.request-success p{max-width:430px;margin:0 auto 8px;line-height:1.5}
+.request-success .btn{margin-top:12px}
