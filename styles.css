@@ -391,3 +391,7 @@
   .top .brand b,
   .top .demo{display:none}
 }
+
+
+/* Ruimte tussen rol en begroeting op dashboard */
+.dashboard-role-row{margin-bottom:18px}
