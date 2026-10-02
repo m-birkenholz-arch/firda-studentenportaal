@@ -72,6 +72,7 @@ async function submitWork(assignmentId){
   if(ins.error)return showToast(ins.error.message);
   const update=await sb.from('submissions').update({status:'submitted',submitted_at:new Date().toISOString(),updated_at:new Date().toISOString()}).eq('id',s.id);
   if(update.error)return showToast(update.error.message);
+  await sendEmailNotification(version>1?'resubmission':'submission',{assignmentId});
   showToast(version>1?`Versie ${version} is ingeleverd.`:'Werk veilig ingeleverd.');
   await openAssignment(assignmentId);
 }
@@ -105,6 +106,7 @@ async function saveReview(submissionId,status,classId){
   if(error)return showToast('Beoordeling opslaan mislukt: '+error.message);
   const u=await sb.from('submissions').update({status,updated_at:new Date().toISOString()}).eq('id',submissionId);
   if(u.error)return showToast('Status bijwerken mislukt: '+u.error.message);
+  await sendEmailNotification('review',{submissionId,status});
   showToast(status==='approved'?'Werk goedgekeurd en teruggestuurd.':'Feedback teruggestuurd naar student.');
   await openTeacherSubmission(submissionId,classId);
 }
@@ -141,6 +143,20 @@ function newAssignment(classId){showModal('Nieuwe opdracht',`<div class="field">
 function makeClassCode(name=''){const prefix=(name.replace(/[^a-zA-Z0-9]/g,'').slice(0,3)||'KLS').toUpperCase();const suffix=Math.random().toString(36).slice(2,6).toUpperCase();return prefix+'-'+suffix}
 function newClass(){showModal('Nieuwe klas',`<div class="field"><label>Klasnaam</label><input name="name" required placeholder="Bijvoorbeeld Mariniers 2026"></div><p class="muted small">De klascode wordt automatisch aangemaakt.</p>`,'Klas aanmaken',async fd=>{const clean=String(fd.get('name')||'').trim();if(!clean)return;let code=makeClassCode(clean),error=null;for(let i=0;i<3;i++){const r=await sb.from('classes').insert({name:clean,code,teacher_id:currentUser.id});error=r.error;if(!error)break;if(String(error.message||'').toLowerCase().includes('duplicate'))code=makeClassCode(clean);else break}if(error)return showToast('Klas aanmaken mislukt: '+error.message);closeModal();showToast('Klas “'+clean+'” is aangemaakt · code '+code);await teacherDashboard()})}
 
+
+// E-mailmeldingen lopen via een beveiligde Supabase Edge Function.
+async function sendEmailNotification(type,payload={}){
+  try{
+    const {data:{session}}=await sb.auth.getSession();
+    if(!session?.access_token)return;
+    const r=await fetch(SUPABASE_URL+'/functions/v1/send-notification',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+session.access_token,'apikey':SUPABASE_KEY},
+      body:JSON.stringify({type,...payload})
+    });
+    if(!r.ok)console.warn('E-mailmelding niet verzonden:',await r.text());
+  }catch(err){console.warn('E-mailmelding mislukt:',err)}
+}
 function greeting(){const h=new Date().getHours();return h<12?'Goedemorgen':h<18?'Goedemiddag':'Goedenavond'}
 function label(s){return ({new:'Nog inleveren',draft:'Concept',submitted:'Ingeleverd',reviewing:'In beoordeling',revision_requested:'Aanpassing gevraagd',approved:'Goedgekeurd',student:'Student',teacher:'Docent',admin:'Beheerder'})[s]||s}
 function esc(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
