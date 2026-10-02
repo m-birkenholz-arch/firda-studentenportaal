@@ -395,3 +395,7 @@
 
 /* Ruimte tussen rol en begroeting op dashboard */
 .dashboard-role-row{margin-bottom:18px}
+
+.brand-logo{display:flex;align-items:center;flex:0 0 auto}
+.brand-logo img{display:block;width:auto;height:54px;max-width:210px;object-fit:contain}
+@media(max-width:650px){.brand-logo img{height:46px;max-width:170px}}
