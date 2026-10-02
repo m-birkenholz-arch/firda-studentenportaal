@@ -83,3 +83,17 @@
   .header-right .marine-wordmark{height:46px;min-height:46px;align-items:center}
   .logout-small{top:calc(50% + 19px)}
 }
+
+/* Compact dashboard zodat de kern op mobiel binnen één scherm blijft */
+.dashboard-greeting{font-size:30px!important;letter-spacing:-1px!important;line-height:1.05}
+@media(max-width:650px){
+  .wrap:has(.dashboard-greeting){padding-top:18px}
+  .wrap:has(.dashboard-greeting)>.heading{margin-bottom:14px;gap:8px}
+  .dashboard-greeting{font-size:22px!important;letter-spacing:-.5px!important;line-height:1.05;margin-top:3px!important}
+  .dashboard-greeting+.muted{font-size:12px;line-height:1.25;margin:4px 0 0}
+  .wrap:has(.dashboard-greeting) .stats{margin-bottom:16px;gap:8px}
+  .wrap:has(.dashboard-greeting) .stat{padding:12px}
+  .wrap:has(.dashboard-greeting) .stat b{font-size:26px}
+  .wrap:has(.dashboard-greeting)>h2{font-size:20px;margin:10px 0}
+  .wrap:has(.dashboard-greeting)>.heading h2{font-size:20px;margin:0}
+}
