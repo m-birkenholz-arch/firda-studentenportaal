@@ -147,8 +147,20 @@ function formatBytes(n){if(!n)return '';if(n<1024)return n+' B';if(n<1048576)ret
 
 function copyClassCode(code){navigator.clipboard?.writeText(code).then(()=>showToast('Klascode gekopieerd: '+code)).catch(()=>showToast('Klascode: '+code))}
 
-async function addStudentToClass(classId){const email=document.getElementById('studentEmail').value.trim().toLowerCase();if(!email)return showToast('Vul het e-mailadres van de student in.');const {data,error}=await sb.rpc('find_student_by_email',{student_email:email});if(error)return showToast('Student zoeken mislukt: '+error.message);const student=Array.isArray(data)?data[0]:data;if(!student?.id)return showToast('Geen studentaccount gevonden met dit e-mailadres.');const r=await sb.from('class_members').insert({class_id:classId,student_id:student.id});if(r.error){if(String(r.error.message).toLowerCase().includes('duplicate'))return showToast('Deze student zit al in de klas.');return showToast('Student toevoegen mislukt: '+r.error.message)}showToast('Student toegevoegd aan de klas.');await openClass(classId)}
-
+async function addStudentToClass(classId){
+  const email=document.getElementById('studentEmail').value.trim().toLowerCase();
+  if(!email)return showToast('Vul het e-mailadres van de student in.');
+  const {data,error}=await sb.rpc('invite_student_to_class',{student_email:email,target_class_id:classId});
+  if(error)return showToast('Student uitnodigen mislukt: '+error.message);
+  const result=Array.isArray(data)?data[0]:data;
+  if(result?.status==='member')showToast('Deze student zit al in de klas.');
+  else if(result?.status==='added')showToast('Bestaand studentaccount is toegevoegd aan de klas.');
+  else{
+    await sendEmailNotification('student_invite',{email,classId});
+    showToast('Uitnodiging verstuurd. De student wordt na activatie automatisch aan de klas toegevoegd.');
+  }
+  await openClass(classId);
+}
 
 async function removeStudentFromClass(classId,studentId,name){
   if(!window.confirm(`${name} uit deze klas verwijderen? De student ziet de opdrachten van deze klas daarna niet meer.`))return;
