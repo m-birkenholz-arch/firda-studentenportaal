@@ -97,3 +97,13 @@
   .wrap:has(.dashboard-greeting)>h2{font-size:20px;margin:10px 0}
   .wrap:has(.dashboard-greeting)>.heading h2{font-size:20px;margin:0}
 }
+
+/* Docentdashboard: compacte knop rechts bij Mijn klassen */
+.class-heading{align-items:flex-start}
+.new-class-btn{width:auto;min-width:0;white-space:nowrap;align-self:flex-start;margin-left:auto;padding:10px 13px}
+@media(max-width:650px){
+  .class-heading{position:relative;display:flex!important;flex-direction:row!important;align-items:flex-start!important;width:100%;gap:8px}
+  .class-heading>div{min-width:0;flex:1}
+  .class-heading .muted{font-size:11px;line-height:1.25;margin:4px 0}
+  .new-class-btn{flex:0 0 auto;width:auto!important;padding:8px 10px;font-size:11px;border-radius:9px;margin-left:auto}
+}
