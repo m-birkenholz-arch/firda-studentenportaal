@@ -384,3 +384,10 @@
   .class-summary{grid-template-columns:repeat(3,1fr)}
   .heading h1{font-size:38px}
 }
+
+
+/* Desktop header vereenvoudigen */
+@media(min-width:1000px){
+  .top .brand b,
+  .top .demo{display:none}
+}
