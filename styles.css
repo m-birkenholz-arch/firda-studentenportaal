@@ -180,3 +180,23 @@
 }
 
 .admin-teachers{margin:18px 0}.admin-teachers .tag{margin-bottom:7px}.admin-teachers .section-head h2{margin:0 0 3px}@media(max-width:650px){.admin-teachers{padding:14px}.admin-teachers .section-head{gap:10px}.admin-teachers .section-head .btn{font-size:11px;padding:8px 9px;white-space:nowrap}}
+
+/* Login / registratie als compacte tabkaart */
+.auth-wrap{display:flex;justify-content:center}
+.auth-card{width:min(100%,560px);padding:0;overflow:hidden}
+.auth-tabs{display:grid;grid-template-columns:1fr 1fr;background:var(--cream);padding:6px;gap:6px;border-bottom:1px solid var(--line)}
+.auth-tab{border:0;background:transparent;color:var(--muted);padding:13px 10px;border-radius:11px;font:inherit;font-weight:800;cursor:pointer}
+.auth-tab.active{background:var(--green);color:#fff}
+.auth-pane{display:none;padding:28px}
+.auth-pane.active{display:block}
+.auth-pane h2{margin-top:0}
+.auth-pane .btn{width:100%;margin-top:4px}
+.auth-pane .textbtn{display:block;margin:12px auto 0}
+@media(max-width:650px){
+ .auth-wrap{padding-top:18px}
+ .auth-card{border-radius:16px}
+ .auth-tabs{padding:5px}
+ .auth-tab{font-size:13px;padding:11px 7px}
+ .auth-pane{padding:20px}
+ .auth-pane h2{font-size:25px;margin-bottom:14px}
+}
