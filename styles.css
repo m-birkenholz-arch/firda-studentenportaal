@@ -428,13 +428,3 @@
 .header-right .marine-logo-image{background:transparent!important;padding:0!important;border-radius:0!important;min-height:0}
 .header-right .marine-logo-image img{display:block;width:220px!important;height:auto!important;max-width:220px!important;max-height:48px!important;object-fit:contain}
 @media(max-width:650px){.header-right .marine-logo-image img{width:145px!important;max-width:145px!important;max-height:38px!important}}
-
-/* Korps Mariniers-embleem: details behouden i.p.v. volledig wit */
-.marine-wordmark .marine-emblem-detail{
-  background-image:url("https://upload.wikimedia.org/wikipedia/commons/6/67/Embleem_Korps_Mariniers.svg")!important;
-  background-position:center!important;
-  background-size:contain!important;
-  background-repeat:no-repeat!important;
-  filter:none!important;
-  mix-blend-mode:normal!important;
-}
