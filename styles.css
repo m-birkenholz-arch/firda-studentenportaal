@@ -210,3 +210,21 @@
  .access-requests .row-actions{display:grid;grid-template-columns:1fr 1fr;width:100%;margin-top:14px}
  .access-requests .row-actions .btn{width:100%;min-width:0;padding:11px 8px}
 }
+
+
+/* Mobiele verfijning: docentbeheer en studentkiezer */
+.access-requests{margin-bottom:24px}
+@media(max-width:650px){
+  .teacher-page .access-requests{margin-bottom:18px;padding:18px}
+  .teacher-page .access-requests .section-head{display:flex;align-items:flex-start;gap:10px}
+  .teacher-page .access-requests .section-head>div{min-width:0;flex:1}
+  .teacher-page .access-requests .section-head h2{font-size:22px;line-height:1.08;overflow-wrap:anywhere}
+  .teacher-page .access-requests .section-head>.tag{flex:0 0 auto;max-width:92px;text-align:center;white-space:normal;font-size:10px;padding:7px 9px}
+  .teacher-page .teacher-admin-grid{margin-top:0}
+  .modal{width:min(92vw,560px);max-width:calc(100vw - 28px)}
+  .modal-body{min-width:0}
+  .available-students .member{display:block;padding:14px 0}
+  .available-students .member>div{min-width:0}
+  .available-students .member b,.available-students .member small{overflow-wrap:anywhere;word-break:break-word}
+  .available-students .member .btn{display:block;width:100%;margin-top:12px;min-width:0}
+}
