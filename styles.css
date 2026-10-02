@@ -150,3 +150,31 @@
 .dashboard-install{margin-left:auto;font-size:11px;padding:7px 10px;border-radius:9px;white-space:nowrap}
 .wrap:has(.dashboard-greeting)>.heading>div.dashboard-title{width:100%}
 @media(max-width:650px){.dashboard-install{font-size:10px;padding:6px 8px}}
+
+/* Docent beheerpagina */
+.teacher-page>.heading h1{font-size:42px;letter-spacing:-2px;margin:8px 0 4px}
+.teacher-admin-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-bottom:18px}
+.teacher-admin-grid .panel{min-width:0}
+.section-head,.teacher-profile-summary{display:flex;align-items:center;justify-content:space-between;gap:18px}
+.section-head h2,.teacher-profile-summary h2{margin:0}
+.teacher-profile-summary{margin-top:18px}
+.teacher-profile-summary p{margin:5px 0 0}
+@media(max-width:800px){.teacher-admin-grid{grid-template-columns:1fr}}
+@media(max-width:650px){
+ .teacher-page{padding-top:16px}
+ .teacher-page>.heading{margin-bottom:14px}
+ .teacher-page>.heading h1{font-size:25px;letter-spacing:-.7px;margin-top:6px}
+ .teacher-page>.heading .muted{font-size:12px;margin:4px 0}
+ .teacher-admin-stats{gap:8px;margin-bottom:14px}
+ .teacher-admin-stats .stat{padding:12px}
+ .teacher-admin-stats .stat b{font-size:25px}
+ .teacher-admin-grid{gap:10px}
+ .teacher-admin-grid .panel,.teacher-profile-summary{padding:14px;border-radius:14px}
+ .teacher-admin-grid h2,.teacher-profile-summary h2{font-size:18px}
+ .teacher-admin-grid .member{padding:9px 0}
+ .teacher-admin-grid .member b{font-size:13px}
+ .teacher-admin-grid .member small{font-size:10px}
+ .teacher-admin-grid .btn{font-size:11px;padding:8px 9px}
+ .section-head{align-items:flex-start}
+ .teacher-profile-summary{align-items:center}
+}
