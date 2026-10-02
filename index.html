@@ -1,12 +1,11 @@
 <!doctype html>
 <html lang="nl">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Firda Studentenportaal — Demo</title>
-<link rel="stylesheet" href="styles.css">
-</head>
-<body>
-<header class="top"><a class="brand" href="#" onclick="go('home')"><span>firda</span><b>studentenportaal</b></a><div class="demo">PROTOTYPE</div><button class="ghost" onclick="logout()">Uitloggen</button></header>
-<main id="app"></main>
-<script src="app.js"></script>
-</body></html>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#244d3c"><meta name="description" content="Studentenportaal voor opdrachten, inzendingen en feedback.">
+<meta name="mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<link rel="manifest" href="/manifest.webmanifest"><link rel="icon" href="/icon.svg" type="image/svg+xml"><link rel="apple-touch-icon" href="/icon-192.png">
+<title>Firda Studentenportaal</title><link rel="stylesheet" href="/styles.css">
+</head><body>
+<header class="top"><a class="brand" href="#" onclick="go('home')"><span>firda</span><b>studentenportaal</b></a><div class="demo">PROTOTYPE</div><button id="installBtn" class="install" hidden>App installeren</button><button class="ghost" onclick="logout()">Uitloggen</button></header>
+<main id="app"></main><div id="toast" class="toast" hidden></div><script src="/app.js"></script></body></html>
