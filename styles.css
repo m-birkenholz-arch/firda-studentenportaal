@@ -132,3 +132,13 @@
   .student-assignment .member{padding:8px 0;font-size:12px}
   .student-assignment .member small{font-size:10px}
 }
+
+/* App installeren: compacte actie rechts in de header */
+.header-actions{display:flex;align-items:center;justify-content:flex-end;gap:8px;min-height:14px}
+.header-install{font-size:10px;padding:5px 8px;border-radius:8px;white-space:nowrap}
+.header-actions .logout-small{position:static;font-size:9px;padding:3px 2px}
+@media(max-width:650px){
+  .header-actions{gap:6px}
+  .header-install{font-size:9px;padding:4px 6px}
+  .header-actions .logout-small{font-size:8px}
+}
