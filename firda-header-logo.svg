@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 620 290" role="img" aria-labelledby="t">
+<title id="t">Firda - Leer jezelf het leven door</title>
+<defs><clipPath id="l"><polygon points="0,0 415,0 225,290 0,290"/></clipPath></defs>
+<rect width="620" height="290" rx="2" fill="#365a59"/>
+<rect width="620" height="290" fill="#ffdc3f" clip-path="url(#l)"/>
+<text x="52" y="178" fill="#fff" font-family="Georgia,Times New Roman,serif" font-size="178" font-weight="700" letter-spacing="-12">Firda</text>
+<text x="245" y="240" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="29" font-weight="700">/</text>
+<text x="280" y="226" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="26">Leer jezelf</text>
+<text x="280" y="258" fill="#fff" font-family="Arial,Helvetica,sans-serif" font-size="26">het leven door</text>
+</svg>
