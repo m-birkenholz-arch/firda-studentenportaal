@@ -34,7 +34,7 @@ async function newClass(){const name=window.prompt('Naam van de nieuwe klas:');i
 function label(s){return ({draft:'Concept',submitted:'Ingeleverd',reviewing:'In beoordeling',revision_requested:'Aanpassing gevraagd',approved:'Goedgekeurd'})[s]||s}
 function esc(v=''){return String(v).replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[m]))}
 function showToast(msg){const t=document.getElementById('toast');t.textContent=msg;t.hidden=false;setTimeout(()=>t.hidden=true,4200)}
-sb.auth.onAuthStateChange(()=>setTimeout(loadSession,0));loadSession();
+loadSession();
 
 let deferredInstallPrompt=null;const installBtn=document.getElementById('installBtn');
 window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;installBtn.hidden=false});
