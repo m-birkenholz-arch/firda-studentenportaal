@@ -179,7 +179,7 @@ async function removeStudentFromClass(classId,studentId,name){
 
 async function editAssignment(assignmentId,classId){const {data:a,error}=await sb.from('assignments').select('*').eq('id',assignmentId).single();if(error)return showToast('Opdracht laden mislukt: '+error.message);const date=a.due_at?String(a.due_at).slice(0,10):'';showModal('Opdracht wijzigen',`<div class="field"><label>Titel</label><input name="title" value="${esc(a.title||'')}" required></div><div class="field"><label>Omschrijving</label><textarea name="description">${esc(a.description||'')}</textarea></div><div class="field"><label>Deadline</label><input name="deadline" type="date" value="${esc(date)}"></div>`,'Wijzigingen opslaan',async fd=>{const title=String(fd.get('title')||'').trim(),description=String(fd.get('description')||'').trim(),deadline=String(fd.get('deadline')||'').trim();const r=await sb.from('assignments').update({title,description:description||null,due_at:deadline?deadline+'T23:59:00':null}).eq('id',assignmentId);if(r.error)return showToast('Opdracht wijzigen mislukt: '+r.error.message);closeModal();showToast('Opdracht is bijgewerkt.');await openClass(classId)})}
 
-async async function deleteClass(classId,name){
+async function deleteClass(classId,name){
   const [{data:assignments,error:assignmentError},{data:members,error:memberError}]=await Promise.all([
     sb.from('assignments').select('id').eq('class_id',classId),
     sb.from('class_members').select('student_id').eq('class_id',classId)
