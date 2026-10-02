@@ -23,7 +23,7 @@ async function signup(e){e.preventDefault();const full_name=signupName.value.tri
 async function login(e){e.preventDefault();const {error}=await sb.auth.signInWithPassword({email:loginEmail.value.trim(),password:loginPassword.value});if(error)return showToast('Inloggen mislukt: '+error.message);await loadSession()}
 async function logout(){await sb.auth.signOut();currentUser=currentProfile=null;home()}
 async function resetPassword(){const email=document.getElementById('loginEmail')?.value.trim();if(!email)return showToast('Vul eerst je e-mailadres in.');const {error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:location.origin});showToast(error?error.message:'Resetlink verzonden.')}
-async function loadSession(){const {data:{session}}=await sb.auth.getSession();if(!session){currentUser=null;currentProfile=null;return home()}currentUser=session.user;const invite=await sb.rpc('apply_teacher_invite');if(invite.error)console.warn('Docentuitnodiging controleren mislukt:',invite.error.message);const studentInvite=await sb.rpc('apply_student_invites');if(studentInvite.error)console.warn('Studentuitnodiging controleren mislukt:',studentInvite.error.message);const {data,error}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();if(error)return showToast('Profiel kon niet worden geladen: '+error.message);currentProfile=data;setLogout(true);if(data.role==='teacher'||data.role==='admin')teacherDashboard();else studentDashboard()}
+async function loadSession(){const {data:{session}}=await sb.auth.getSession();if(!session){currentUser=null;currentProfile=null;return home()}currentUser=session.user;const invite=await sb.rpc('apply_teacher_invite');if(invite.error)console.warn('Docentuitnodiging controleren mislukt:',invite.error.message);const {data,error}=await sb.from('profiles').select('*').eq('id',currentUser.id).single();if(error)return showToast('Profiel kon niet worden geladen: '+error.message);currentProfile=data;setLogout(true);if(data.role==='teacher'||data.role==='admin')teacherDashboard();else studentDashboard()}
 
 async function studentDashboard(){setLogout(true);app.innerHTML='<section class="wrap"><p>Dashboard laden…</p></section>';const {data:members}=await sb.from('class_members').select('class_id').eq('student_id',currentUser.id);const classIds=(members||[]).map(x=>x.class_id);let assignments=[];if(classIds.length){const r=await sb.from('assignments').select('*').in('class_id',classIds).order('due_at');assignments=r.data||[]}const {data:subs}=await sb.from('submissions').select('*').eq('student_id',currentUser.id);const subMap=new Map((subs||[]).map(s=>[s.assignment_id,s]));app.innerHTML=`<section class="wrap"><div class="heading"><div class="dashboard-title"><div class="dashboard-role-row"><span class="tag">STUDENT</span><button id="installBtn" class="install dashboard-install" type="button" hidden>App installeren</button></div><h1 class="dashboard-greeting">${greeting()}, ${esc(currentProfile.full_name||currentUser.email)}</h1><p class="muted">Jouw opdrachten en voortgang</p></div></div><div class="stats"><div class="stat"><b>${assignments.length}</b><span class="muted">Opdrachten</span></div><div class="stat"><b>${(subs||[]).filter(x=>x.status==='submitted'||x.status==='reviewing').length}</b><span class="muted">In behandeling</span></div><div class="stat"><b>${(subs||[]).filter(x=>x.status==='revision_requested').length}</b><span class="muted">Aanpassen</span></div><div class="stat"><b>${(subs||[]).filter(x=>x.status==='approved').length}</b><span class="muted">Goedgekeurd</span></div></div><h2>Mijn opdrachten</h2><div class="cards">${assignments.length?assignments.map(a=>assignmentCard(a,subMap.get(a.id))).join(''):'<div class="panel"><p class="muted">Je bent nog niet aan een klas met opdrachten gekoppeld.</p></div>'}</div></section>`;bindInstallButton()}
 function assignmentCard(a,s){const status=s?.status||'Nog inleveren';return `<article class="card">${tagHtml(s?.status||'new')}<h3>${esc(a.title)}</h3><p class="muted">${esc(a.description||'')}</p><div class="meta"><span>${a.due_at?'Deadline '+new Date(a.due_at).toLocaleDateString('nl-NL'):'Geen deadline'}</span></div><button class="btn light" onclick="openAssignment('${a.id}')">Opdracht bekijken →</button></article>`}
@@ -156,15 +156,16 @@ function copyClassCode(code){navigator.clipboard?.writeText(code).then(()=>showT
 async function addStudentToClass(classId){
   const email=document.getElementById('studentEmail').value.trim().toLowerCase();
   if(!email)return showToast('Vul het e-mailadres van de student in.');
-  const {data,error}=await sb.rpc('invite_student_to_class',{student_email:email,target_class_id:classId});
-  if(error)return showToast('Student uitnodigen mislukt: '+error.message);
-  const result=Array.isArray(data)?data[0]:data;
-  if(result?.status==='member')showToast('Deze student zit al in de klas.');
-  else if(result?.status==='added')showToast('Bestaand studentaccount is toegevoegd aan de klas.');
-  else{
-    await sendEmailNotification('student_invite',{email,classId});
-    showToast('Uitnodiging verstuurd. De student wordt na activatie automatisch aan de klas toegevoegd.');
-  }
+  const {data:students,error:findError}=await sb.rpc('find_student_by_email',{student_email:email});
+  if(findError)return showToast('Student zoeken mislukt: '+findError.message);
+  const student=Array.isArray(students)?students[0]:students;
+  if(!student)return showToast('Geen actief studentaccount gevonden met dit e-mailadres.');
+  const {data:existing,error:checkError}=await sb.from('class_members').select('student_id').eq('class_id',classId).eq('student_id',student.id).maybeSingle();
+  if(checkError)return showToast('Klaslid controleren mislukt: '+checkError.message);
+  if(existing)return showToast('Deze student zit al in de klas.');
+  const {error}=await sb.from('class_members').insert({class_id:classId,student_id:student.id});
+  if(error)return showToast('Student toevoegen mislukt: '+error.message);
+  showToast((student.full_name||email)+' is toegevoegd aan de klas.');
   await openClass(classId);
 }
 
