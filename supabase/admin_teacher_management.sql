@@ -85,3 +85,26 @@ revoke all on function public.admin_list_teachers() from public;
 grant execute on function public.admin_invite_teacher(text) to authenticated;
 grant execute on function public.apply_teacher_invite() to authenticated;
 grant execute on function public.admin_list_teachers() to authenticated;
+
+
+-- Remove teacher rights while preserving the user account and data.
+create or replace function public.admin_remove_teacher(teacher_id uuid)
+returns boolean
+language plpgsql
+security definer
+set search_path = public, auth
+as $$
+begin
+  if not exists (select 1 from public.profiles me where me.id=auth.uid() and me.role='admin') then
+    raise exception 'Alleen een beheerder kan docenten verwijderen.';
+  end if;
+  if teacher_id=auth.uid() then raise exception 'Je kunt je eigen adminrol niet verwijderen.'; end if;
+  if not exists (select 1 from public.profiles p where p.id=teacher_id and p.role='teacher') then
+    raise exception 'Docent niet gevonden.';
+  end if;
+  update public.profiles set role='student' where id=teacher_id and role='teacher';
+  return true;
+end;
+$$;
+revoke all on function public.admin_remove_teacher(uuid) from public;
+grant execute on function public.admin_remove_teacher(uuid) to authenticated;
