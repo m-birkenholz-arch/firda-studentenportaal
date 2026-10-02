@@ -44,3 +44,7 @@
 .marine-type{display:flex;flex-direction:column;line-height:.82;letter-spacing:.04em}.marine-type small{font-size:11px;letter-spacing:.18em;font-weight:500}.marine-type strong{font-size:22px;font-weight:900;letter-spacing:.02em}
 .marine-wordmark+.demo{margin-left:0}
 @media(max-width:650px){.marine-wordmark{height:52px;gap:5px}.marine-crest{width:39px;height:47px}.marine-type small{font-size:8px}.marine-type strong{font-size:15px}.marine-logo{display:none}}
+
+/* Verwijder defect vlak van eerdere embleem-masker */
+.marine-wordmark .marine-crest{display:none!important}
+.marine-wordmark{gap:0}
