@@ -316,7 +316,13 @@
 #mainNav button{position:relative}
 .nav-badge{position:absolute;top:5px;right:calc(50% - 43px);min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:#d9f35f;color:#173c2f;display:grid;place-items:center;font-size:11px;font-weight:900;line-height:1;box-shadow:0 0 0 2px #174b3a}
 #mainNav .has-alert{font-weight:800}
-.access-requests-active{position:relative;border:2px solid #b7d936;box-shadow:0 0 0 5px rgba(217,243,95,.16),0 12px 32px rgba(36,77,60,.08)}
-.access-requests-active:before{content:'';position:absolute;inset:-2px;border-radius:inherit;border:2px solid rgba(183,217,54,.65);pointer-events:none;animation:accessPulse 1.8s ease-out infinite}
-@keyframes accessPulse{0%{opacity:.8;transform:scale(1)}70%,100%{opacity:0;transform:scale(1.018)}}
-@media(prefers-reduced-motion:reduce){.access-requests-active:before{animation:none}}
+.access-requests-active{position:relative;border:2px solid #b7d936;animation:accessGlow 1.35s ease-in-out infinite}
+.access-requests-active:before{content:'';position:absolute;inset:-5px;border-radius:24px;border:3px solid #d9f35f;pointer-events:none;animation:accessRing 1.35s ease-in-out infinite}
+@keyframes accessGlow{
+  0%,100%{box-shadow:0 0 0 2px rgba(217,243,95,.15),0 10px 28px rgba(36,77,60,.08)}
+  50%{box-shadow:0 0 0 8px rgba(217,243,95,.55),0 0 24px rgba(183,217,54,.5),0 12px 34px rgba(36,77,60,.12)}
+}
+@keyframes accessRing{
+  0%,100%{opacity:.25}
+  50%{opacity:1}
+}
