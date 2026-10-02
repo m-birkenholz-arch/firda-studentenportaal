@@ -203,7 +203,7 @@ async function deleteClass(classId,name){
   });
 }
 
-function deleteAssignment(assignmentId,classId,title){
+async function deleteAssignment(assignmentId,classId,title){
   const {data:subs,error:checkError}=await sb.from('submissions').select('id').eq('assignment_id',assignmentId).limit(1);
   if(checkError)return showToast('Controle mislukt: '+checkError.message);
   if(subs?.length)return showToast('Deze opdracht heeft al inzendingen en kan daarom niet worden verwijderd.');
