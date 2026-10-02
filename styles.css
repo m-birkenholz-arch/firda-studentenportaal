@@ -200,3 +200,13 @@
  .auth-pane{padding:20px}
  .auth-pane h2{font-size:25px;margin-bottom:14px}
 }
+
+/* Toegangsaanvragen: mobiele acties binnen de kaart */
+.access-requests .member{align-items:center;gap:14px}
+.access-requests .member>div:first-child{min-width:0;overflow-wrap:anywhere}
+.access-requests .row-actions{flex:0 0 auto;display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+@media(max-width:650px){
+ .access-requests .member{display:block}
+ .access-requests .row-actions{display:grid;grid-template-columns:1fr 1fr;width:100%;margin-top:14px}
+ .access-requests .row-actions .btn{width:100%;min-width:0;padding:11px 8px}
+}
