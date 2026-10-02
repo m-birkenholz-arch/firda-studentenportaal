@@ -432,3 +432,16 @@
 /* Klikbare headerlogo's */
 .brand-logo,.marine-link{text-decoration:none}
 .marine-link{cursor:pointer}
+
+/* Geen linkstrepen in Korps Mariniers-headerlogo */
+.header-right a.marine-link,
+.header-right a.marine-link:hover,
+.header-right a.marine-link:focus,
+.header-right a.marine-link:active,
+.header-right a.marine-link:visited,
+.header-right a.marine-link *,
+.header-right a.marine-link:hover *{
+  text-decoration:none!important;
+  border-bottom:none!important;
+  box-shadow:none;
+}
