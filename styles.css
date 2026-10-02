@@ -297,3 +297,9 @@
   .submission-row{align-items:flex-start}
   .submission-row .row-actions{align-items:flex-end}
 }
+
+
+/* Beheerder: docenten en studenten */
+.admin-management-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:18px}
+.admin-management-grid .panel{margin:0}
+@media(max-width:800px){.admin-management-grid{grid-template-columns:1fr}}
