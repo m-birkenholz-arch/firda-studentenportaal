@@ -32,6 +32,7 @@ async function openAssignment(id){
   const {data:a,error}=await sb.from('assignments').select('*').eq('id',id).single();
   if(error)return showToast(error.message);
   const {data:s}=await sb.from('submissions').select('*').eq('assignment_id',id).eq('student_id',currentUser.id).maybeSingle();
+  const {data:assignmentFile}=await sb.from('assignment_files').select('*').eq('assignment_id',id).maybeSingle();
   let reviews=[],versions=[];
   if(s){
     const [rr,vr]=await Promise.all([
@@ -52,8 +53,14 @@ async function openAssignment(id){
         : '';
   const uploadTitle=versions.length?'Nieuwe versie inleveren':'Werk inleveren';
   const uploadArea=canSubmit?`<h3>${uploadTitle}</h3><div class="drop"><input id="submissionFile" type="file" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png"><p class="muted">PDF, DOC/DOCX, JPG of PNG · maximaal 25 MB</p></div><div class="field"><label>Opmerking (optioneel)</label><textarea id="studentNote" placeholder="Bijvoorbeeld: ik heb de feedback verwerkt."></textarea></div><button class="btn" onclick="submitWork('${a.id}')">${versions.length?'Nieuwe versie inleveren':'Werk inleveren'}</button>`:'';
-  app.innerHTML=`<section class="wrap student-assignment"><button class="back" onclick="studentDashboard()">← Terug</button><div class="split"><div class="panel assignment-main">${tagHtml(s?.status||'new')}<h1>${esc(a.title)}</h1><p>${esc(a.description||'')}</p>${statusMessage}${uploadArea}<h3>Mijn ingeleverde versies</h3>${versions.length?versions.map(v=>`<div class="member"><div><b>Versie ${v.version_number}</b><small>${esc(v.original_filename||'Bestand')} · ${v.size_bytes?formatBytes(v.size_bytes):''}</small></div></div>`).join(''):'<p class="muted">Nog niets ingeleverd.</p>'}</div><aside class="panel"><h2>Feedback van docent</h2>${latestReview?`<div class="notice">${tagHtml(latestReview.status)}<p>${esc(latestReview.feedback||'Geen tekstuele feedback.')}</p></div>`:'<p class="muted">Nog geen feedback ontvangen.</p>'}${reviews.length>1?`<h3>Eerdere feedback</h3>${reviews.slice(1).map(r=>`<div class="notice"><b>${label(r.status)}</b><p>${esc(r.feedback||'Geen tekstuele feedback.')}</p></div>`).join('')}`:''}</aside></div></section>`;
+  app.innerHTML=`<section class="wrap student-assignment"><button class="back" onclick="studentDashboard()">← Terug</button><div class="split"><div class="panel assignment-main">${tagHtml(s?.status||'new')}<h1>${esc(a.title)}</h1><p>${esc(a.description||'')}</p>${assignmentFile?`<div class="notice assignment-file"><b>Opdrachtbestand</b><p class="muted">${esc(assignmentFile.original_filename||'Bijlage')}</p><button class="btn light" onclick="openAssignmentFile('${assignmentFile.storage_path}')">Bestand openen / downloaden</button></div>`:''}${statusMessage}${uploadArea}<h3>Mijn ingeleverde versies</h3>${versions.length?versions.map(v=>`<div class="member"><div><b>Versie ${v.version_number}</b><small>${esc(v.original_filename||'Bestand')} · ${v.size_bytes?formatBytes(v.size_bytes):''}</small></div></div>`).join(''):'<p class="muted">Nog niets ingeleverd.</p>'}</div><aside class="panel"><h2>Feedback van docent</h2>${latestReview?`<div class="notice">${tagHtml(latestReview.status)}<p>${esc(latestReview.feedback||'Geen tekstuele feedback.')}</p></div>`:'<p class="muted">Nog geen feedback ontvangen.</p>'}${reviews.length>1?`<h3>Eerdere feedback</h3>${reviews.slice(1).map(r=>`<div class="notice"><b>${label(r.status)}</b><p>${esc(r.feedback||'Geen tekstuele feedback.')}</p></div>`).join('')}`:''}</aside></div></section>`;
 }
+async function openAssignmentFile(path){
+  const {data,error}=await sb.storage.from('assignment-files').createSignedUrl(path,300);
+  if(error)return showToast('Opdrachtbestand openen mislukt: '+error.message);
+  window.open(data.signedUrl,'_blank','noopener');
+}
+
 async function submitWork(assignmentId){
   const input=document.getElementById('submissionFile');
   const file=input?.files?.[0];
@@ -175,7 +182,36 @@ async function removeStudentFromClass(classId,studentId,name){
   await openClass(classId);
 }
 
-async function editAssignment(assignmentId,classId){const {data:a,error}=await sb.from('assignments').select('*').eq('id',assignmentId).single();if(error)return showToast('Opdracht laden mislukt: '+error.message);const date=a.due_at?String(a.due_at).slice(0,10):'';showModal('Opdracht wijzigen',`<div class="field"><label>Titel</label><input name="title" value="${esc(a.title||'')}" required></div><div class="field"><label>Omschrijving</label><textarea name="description">${esc(a.description||'')}</textarea></div><div class="field"><label>Deadline</label><input name="deadline" type="date" value="${esc(date)}"></div>`,'Wijzigingen opslaan',async fd=>{const title=String(fd.get('title')||'').trim(),description=String(fd.get('description')||'').trim(),deadline=String(fd.get('deadline')||'').trim();const r=await sb.from('assignments').update({title,description:description||null,due_at:deadline?deadline+'T23:59:00':null}).eq('id',assignmentId);if(r.error)return showToast('Opdracht wijzigen mislukt: '+r.error.message);closeModal();showToast('Opdracht is bijgewerkt.');await openClass(classId)})}
+async function editAssignment(assignmentId,classId){
+  const [{data:a,error},{data:file}]=await Promise.all([
+    sb.from('assignments').select('*').eq('id',assignmentId).single(),
+    sb.from('assignment_files').select('*').eq('assignment_id',assignmentId).maybeSingle()
+  ]);
+  if(error)return showToast('Opdracht laden mislukt: '+error.message);
+  const date=a.due_at?String(a.due_at).slice(0,10):'';
+  showModal('Opdracht wijzigen',`<div class="field"><label>Titel</label><input name="title" value="${esc(a.title||'')}" required></div><div class="field"><label>Omschrijving</label><textarea name="description">${esc(a.description||'')}</textarea></div><div class="field"><label>Deadline</label><input name="deadline" type="date" value="${esc(date)}"></div>${file?`<div class="notice"><b>Huidige bijlage</b><p class="muted">${esc(file.original_filename)}</p><label class="checkline"><input name="remove_file" type="checkbox"> Bijlage verwijderen</label></div>`:''}<div class="field"><label>${file?'Bijlage vervangen':'Bijlage toevoegen'} (optioneel)</label><input name="assignment_file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png"><small class="muted">PDF, Word, PowerPoint, JPG of PNG · maximaal 25 MB</small></div>`,'Wijzigingen opslaan',async fd=>{
+    const title=String(fd.get('title')||'').trim(),description=String(fd.get('description')||'').trim(),deadline=String(fd.get('deadline')||'').trim();
+    const newFile=fd.get('assignment_file');
+    if(newFile?.size>25*1024*1024)return showToast('Bijlage is groter dan 25 MB.');
+    const r=await sb.from('assignments').update({title,description:description||null,due_at:deadline?deadline+'T23:59:00':null}).eq('id',assignmentId);
+    if(r.error)return showToast('Opdracht wijzigen mislukt: '+r.error.message);
+    if((fd.get('remove_file')||newFile?.size)&&file){
+      const del=await sb.storage.from('assignment-files').remove([file.storage_path]);
+      if(del.error)return showToast('Oude bijlage verwijderen mislukt: '+del.error.message);
+      const metaDel=await sb.from('assignment_files').delete().eq('id',file.id);
+      if(metaDel.error)return showToast('Bijlagegegevens verwijderen mislukt: '+metaDel.error.message);
+    }
+    if(newFile?.size){
+      const safe=newFile.name.replace(/[^a-zA-Z0-9._-]/g,'_');
+      const path=assignmentId+'/'+Date.now()+'-'+safe;
+      const up=await sb.storage.from('assignment-files').upload(path,newFile);
+      if(up.error)return showToast('Bijlage uploaden mislukt: '+up.error.message);
+      const meta=await sb.from('assignment_files').insert({assignment_id:assignmentId,teacher_id:currentUser.id,storage_path:path,original_filename:newFile.name,mime_type:newFile.type||null,size_bytes:newFile.size});
+      if(meta.error){await sb.storage.from('assignment-files').remove([path]);return showToast('Bijlage opslaan mislukt: '+meta.error.message)}
+    }
+    closeModal();showToast('Opdracht is bijgewerkt.');await openClass(classId);
+  });
+}
 
 async function deleteClass(classId,name){
   const [{data:assignments,error:assignmentError},{data:members,error:memberError}]=await Promise.all([
@@ -212,7 +248,23 @@ async function deleteAssignment(assignmentId,classId,title){
   await openClass(classId);
 }
 
-function newAssignment(classId){showModal('Nieuwe opdracht',`<div class="field"><label>Titel</label><input name="title" required placeholder="Bijvoorbeeld Reflectieverslag"></div><div class="field"><label>Omschrijving</label><textarea name="description" placeholder="Wat moet de student doen?"></textarea></div><div class="field"><label>Deadline</label><input name="deadline" type="date"></div>`,'Opdracht aanmaken',async fd=>{const title=String(fd.get('title')||'').trim(),description=String(fd.get('description')||'').trim(),deadline=String(fd.get('deadline')||'').trim();const row={class_id:classId,teacher_id:currentUser.id,title,description:description||null,due_at:deadline?deadline+'T23:59:00':null};const {error}=await sb.from('assignments').insert(row);if(error)return showToast('Opdracht aanmaken mislukt: '+error.message);closeModal();showToast('Opdracht “'+title+'” is aangemaakt.');await openClass(classId)})}
+function newAssignment(classId){
+  showModal('Nieuwe opdracht',`<div class="field"><label>Titel</label><input name="title" required placeholder="Bijvoorbeeld Reflectieverslag"></div><div class="field"><label>Omschrijving</label><textarea name="description" placeholder="Wat moet de student doen?"></textarea></div><div class="field"><label>Deadline</label><input name="deadline" type="date"></div><div class="field"><label>Opdrachtbestand (optioneel)</label><input name="assignment_file" type="file" accept=".pdf,.doc,.docx,.ppt,.pptx,.jpg,.jpeg,.png"><small class="muted">PDF, Word, PowerPoint, JPG of PNG · maximaal 25 MB</small></div>`,'Opdracht aanmaken',async fd=>{
+    const title=String(fd.get('title')||'').trim(),description=String(fd.get('description')||'').trim(),deadline=String(fd.get('deadline')||'').trim(),file=fd.get('assignment_file');
+    if(file?.size>25*1024*1024)return showToast('Bijlage is groter dan 25 MB.');
+    const row={class_id:classId,teacher_id:currentUser.id,title,description:description||null,due_at:deadline?deadline+'T23:59:00':null};
+    const {data:a,error}=await sb.from('assignments').insert(row).select().single();
+    if(error)return showToast('Opdracht aanmaken mislukt: '+error.message);
+    if(file?.size){
+      const safe=file.name.replace(/[^a-zA-Z0-9._-]/g,'_'),path=a.id+'/'+Date.now()+'-'+safe;
+      const up=await sb.storage.from('assignment-files').upload(path,file);
+      if(up.error){await sb.from('assignments').delete().eq('id',a.id);return showToast('Opdrachtbestand uploaden mislukt: '+up.error.message)}
+      const meta=await sb.from('assignment_files').insert({assignment_id:a.id,teacher_id:currentUser.id,storage_path:path,original_filename:file.name,mime_type:file.type||null,size_bytes:file.size});
+      if(meta.error){await sb.storage.from('assignment-files').remove([path]);await sb.from('assignments').delete().eq('id',a.id);return showToast('Opdrachtbestand opslaan mislukt: '+meta.error.message)}
+    }
+    closeModal();showToast('Opdracht “'+title+'” is aangemaakt.');await openClass(classId);
+  });
+}
 
 function makeClassCode(name=''){const prefix=(name.replace(/[^a-zA-Z0-9]/g,'').slice(0,3)||'KLS').toUpperCase();const suffix=Math.random().toString(36).slice(2,6).toUpperCase();return prefix+'-'+suffix}
 function newClass(){showModal('Nieuwe klas',`<div class="field"><label>Klasnaam</label><input name="name" required placeholder="Bijvoorbeeld Mariniers 2026"></div><p class="muted small">De klascode wordt automatisch aangemaakt.</p>`,'Klas aanmaken',async fd=>{const clean=String(fd.get('name')||'').trim();if(!clean)return;let code=makeClassCode(clean),error=null;for(let i=0;i<3;i++){const r=await sb.from('classes').insert({name:clean,code,teacher_id:currentUser.id});error=r.error;if(!error)break;if(String(error.message||'').toLowerCase().includes('duplicate'))code=makeClassCode(clean);else break}if(error)return showToast('Klas aanmaken mislukt: '+error.message);closeModal();showToast('Klas “'+clean+'” is aangemaakt · code '+code);await teacherDashboard()})}
