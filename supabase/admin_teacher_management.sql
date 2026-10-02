@@ -108,3 +108,52 @@ end;
 $$;
 revoke all on function public.admin_remove_teacher(uuid) from public;
 grant execute on function public.admin_remove_teacher(uuid) to authenticated;
+
+
+-- Invite-only registration for all new accounts.
+create table if not exists public.account_invites (
+  email text primary key,
+  role text not null check (role in ('student','teacher')),
+  invited_by uuid not null references auth.users(id) on delete cascade,
+  created_at timestamptz not null default now()
+);
+alter table public.account_invites enable row level security;
+revoke all on table public.account_invites from public, anon, authenticated;
+
+create or replace function public.admin_invite_student(account_email text)
+returns text language plpgsql security definer set search_path=public,auth as $$
+declare clean_email text:=lower(trim(account_email));
+begin
+ if not exists(select 1 from public.profiles me where me.id=auth.uid() and me.role in ('admin','teacher')) then raise exception 'Geen toegang.'; end if;
+ if clean_email='' then raise exception 'Vul een e-mailadres in.'; end if;
+ insert into public.account_invites(email,role,invited_by) values(clean_email,'student',auth.uid())
+ on conflict(email) do update set role='student',invited_by=excluded.invited_by,created_at=now();
+ return 'invited';
+end;$$;
+
+-- Keep teacher invites mirrored into the general allow-list.
+create or replace function public.admin_invite_teacher(account_email text)
+returns text language plpgsql security definer set search_path=public,auth as $$
+declare clean_email text:=lower(trim(account_email)); target_id uuid;
+begin
+ if not exists(select 1 from public.profiles me where me.id=auth.uid() and me.role='admin') then raise exception 'Alleen een beheerder kan docenten toevoegen.'; end if;
+ select u.id into target_id from auth.users u where lower(u.email)=clean_email limit 1;
+ if target_id is not null then
+   update public.profiles set role='teacher' where id=target_id and role<>'admin';
+   delete from public.teacher_invites where email=clean_email;
+   delete from public.account_invites where email=clean_email;
+   return 'promoted';
+ end if;
+ insert into public.teacher_invites(email,invited_by) values(clean_email,auth.uid()) on conflict(email) do update set invited_by=excluded.invited_by,created_at=now();
+ insert into public.account_invites(email,role,invited_by) values(clean_email,'teacher',auth.uid()) on conflict(email) do update set role='teacher',invited_by=excluded.invited_by,created_at=now();
+ return 'invited';
+end;$$;
+
+create or replace function public.check_account_invite(account_email text)
+returns boolean language sql security definer set search_path=public as $$
+ select exists(select 1 from public.account_invites where email=lower(trim(account_email)));
+$$;
+revoke all on function public.check_account_invite(text) from public;
+grant execute on function public.check_account_invite(text) to anon,authenticated;
+revoke all on function public.admin_invite_student(text) from public;
+grant execute on function public.admin_invite_student(text) to authenticated;
