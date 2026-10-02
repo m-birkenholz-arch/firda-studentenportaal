@@ -399,3 +399,7 @@
 .brand-logo{display:flex;align-items:center;flex:0 0 auto}
 .brand-logo img{display:block;width:auto;height:54px;max-width:210px;object-fit:contain}
 @media(max-width:650px){.brand-logo img{height:46px;max-width:170px}}
+
+.marine-logo-image{display:flex;align-items:center}
+.marine-logo-image img{display:block;width:auto;height:42px;max-width:235px;object-fit:contain}
+@media(max-width:650px){.marine-logo-image img{height:34px;max-width:150px}}
