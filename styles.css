@@ -403,3 +403,23 @@
 .marine-logo-image{display:flex;align-items:center}
 .marine-logo-image img{display:block;width:auto;height:42px;max-width:235px;object-fit:contain}
 @media(max-width:650px){.marine-logo-image img{height:34px;max-width:150px}}
+
+/* Korps Mariniers-logo goed zichtbaar op de donkere header */
+.header-right .marine-logo-image{
+  background:#fff;
+  padding:5px 8px;
+  border-radius:5px;
+  min-height:0;
+}
+.header-right .marine-logo-image img{
+  display:block;
+  width:220px;
+  height:auto;
+  max-height:48px;
+  max-width:220px;
+  object-fit:contain;
+}
+@media(max-width:650px){
+  .header-right .marine-logo-image{padding:4px 6px}
+  .header-right .marine-logo-image img{width:145px;height:auto;max-height:38px}
+}
