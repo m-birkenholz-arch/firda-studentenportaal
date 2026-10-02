@@ -314,7 +314,11 @@
 
 /* Openstaande toegangsaanvragen */
 #mainNav button{position:relative}
-.nav-badge{position:absolute;top:5px;right:calc(50% - 43px);min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:#d9f35f;color:#173c2f;display:grid;place-items:center;font-size:11px;font-weight:900;line-height:1;box-shadow:0 0 0 2px #174b3a}
+.nav-badge{position:absolute;top:5px;right:calc(50% - 43px);min-width:21px;height:21px;padding:0 6px;border-radius:999px;background:#d9f35f;color:#173c2f;display:grid;place-items:center;font-size:11px;font-weight:900;line-height:1;box-shadow:0 0 0 2px #174b3a;animation:navBadgePulse 1.2s ease-in-out infinite}
+@keyframes navBadgePulse{
+  0%,100%{transform:scale(1);box-shadow:0 0 0 2px #174b3a,0 0 0 0 rgba(217,243,95,0)}
+  50%{transform:scale(1.18);box-shadow:0 0 0 2px #174b3a,0 0 0 7px rgba(217,243,95,.38)}
+}
 #mainNav .has-alert{font-weight:800}
 .access-requests-active{position:relative;border:2px solid #b7d936;animation:accessGlow 1.35s ease-in-out infinite}
 .access-requests-active:before{content:'';position:absolute;inset:-5px;border-radius:24px;border:3px solid #d9f35f;pointer-events:none;animation:accessRing 1.35s ease-in-out infinite}
