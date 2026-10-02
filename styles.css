@@ -142,3 +142,8 @@
   .header-install{font-size:9px;padding:4px 6px}
   .header-actions .logout-small{font-size:8px}
 }
+
+/* App installeren rechts naast het label in het inlogblok */
+.auth-panel-top{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%}
+.auth-install{margin-left:auto;font-size:11px;padding:7px 10px;border-radius:9px;white-space:nowrap}
+@media(max-width:650px){.auth-install{font-size:10px;padding:6px 8px}}
