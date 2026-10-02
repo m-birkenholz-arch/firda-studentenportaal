@@ -178,3 +178,5 @@
  .section-head{align-items:flex-start}
  .teacher-profile-summary{align-items:center}
 }
+
+.admin-teachers{margin:18px 0}.admin-teachers .tag{margin-bottom:7px}.admin-teachers .section-head h2{margin:0 0 3px}@media(max-width:650px){.admin-teachers{padding:14px}.admin-teachers .section-head{gap:10px}.admin-teachers .section-head .btn{font-size:11px;padding:8px 9px;white-space:nowrap}}
