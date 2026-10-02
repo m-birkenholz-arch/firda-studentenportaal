@@ -31,7 +31,7 @@
 .top{border-bottom:1px solid rgba(255,255,255,.32)}
 
 /* Korps Mariniers embleem in header */
-.marine-logo{height:58px;width:auto;display:block;object-fit:contain;margin-left:auto;flex:0 0 auto}
+.marine-logo{height:64px;width:auto;display:block;object-fit:contain;margin-left:auto;flex:0 0 automix-blend-mode:screen}
 .main-nav:not([hidden])+.marine-logo{margin-left:0}
 .marine-logo+.demo{margin-left:0}
-@media(max-width:650px){.marine-logo{height:52px;margin-left:auto}.main-nav:not([hidden])+.marine-logo{margin-left:0}}
+@media(max-width:650px){.marine-logo{height:54px;margin-left:auto}.main-nav:not([hidden])+.marine-logo{margin-left:0}}
